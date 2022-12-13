@@ -4,18 +4,20 @@ import random
 from pygame.locals import *
 
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Breakin' Bricks")
+screen = pygame.display.set_mode((500, 400))
+pygame.display.set_caption("Breaking Bricks")
 
 # Universal Variables
 speed_multiplier = 1.075
+hits = 0
 score = 0
 font = pygame.font.SysFont('Arial', 56)
 begin = False
-score_location = (screen.get_width() - 200, screen.get_height() - 75)
+win_time = 0
+hit_location = (screen.get_width() - 200, screen.get_height() - 75)
 message_location = (screen.get_width() / 2, screen.get_height() - 250)
 time_location = (25, screen.get_height() - 75)
-score_color = [255, 255, 255]
+hit_color = [255, 255, 255]
 
 # Assets
 bat = pygame.image.load('./images/bat.png')
@@ -37,7 +39,7 @@ brick = brick.convert_alpha()
 brick_rect = brick.get_rect()
 
 bricks = []
-brick_rows = 5
+brick_rows = 1
 brick_gap = 10
 brick_cols = screen.get_width() // (brick_rect[2] + brick_gap)
 side_gap = (screen.get_width() - (brick_rect[2] + brick_gap) * brick_cols + brick_gap) // 2
@@ -68,17 +70,22 @@ while not game_over:
 
     # Check for win
     if not bricks:
-        message = font.render('You Win!', True, (0, 255, 0))
+        if win_time == 0:
+            win_time = (pygame.time.get_ticks() / 1000)
+
+        score = (hits * 1000 / win_time)
+        message = font.render('You Win! Score: ' + str(math.floor(score)), True, (0, 255, 0))
         message_rect = message.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2))
         screen.blit(message, message_rect)
+        sx, sy = (0, 0)
 
     # Draw Time
     if begin:
         time = font.render('time: ' + str(math.floor(pygame.time.get_ticks() / 1000)), True, (255, 255, 255))
         screen.blit(time, time_location)
 
-    # Draw Score
-    screen.blit(font.render('hits: ' + str(score), True, tuple(score_color)), score_location)
+    # Draw hits
+    screen.blit(font.render('hits: ' + str(hits), True, tuple(hit_color)), hit_location)
 
     for b in bricks:
         screen.blit(brick, b)
@@ -110,8 +117,8 @@ while not game_over:
     if bat_rect[1] + bat_rect.height >= ball_rect[1] + ball_rect.height >= bat_rect[1] and \
             bat_rect[0] + bat_rect.width >= ball_rect[0] >= bat_rect[0] and \
             sy > 0:
-        score += 1
-        score_color = [0, 200, 0]
+        hits += 1
+        hit_color = [0, 200, 0]
         sx *= speed_multiplier
         sy *= -speed_multiplier
         continue
@@ -149,8 +156,8 @@ while not game_over:
 
     if delete_brick is not None:
         bricks.remove(delete_brick)
-        score += 1
-        score_color = [0, 200, 0]
+        hits += 1
+        hit_color = [0, 200, 0]
 
     # Ball against edges
     if ball_rect[1] <= 0:
@@ -159,8 +166,8 @@ while not game_over:
     if ball_rect[1] >= screen.get_height() - ball_rect.height:
         ball_rect[0], ball_rect[1] = (random.randint(100, screen.get_width() - 100), 250)
         sx, sy = ((random.randint(-1, 1) * 3.0 * speed_multiplier) + 1, 3.0 * speed_multiplier)
-        score -= 5
-        score_color = [200, 0, 0]
+        hits -= 5
+        hit_color = [200, 0, 0]
         ball_served = False
     if ball_rect[0] <= 0:
         ball_rect[0] = 0
@@ -177,9 +184,9 @@ while not game_over:
 
     # Color update
     for c in range(0, 3):
-        if score_color[c] <= 255:
-            score_color[c] += 7
-            if score_color[c] > 255:
-                score_color[c] = 255
+        if hit_color[c] <= 255:
+            hit_color[c] += 7
+            if hit_color[c] > 255:
+                hit_color[c] = 255
 
 pygame.quit()
