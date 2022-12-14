@@ -4,7 +4,7 @@ import random
 from pygame.locals import *
 
 pygame.init()
-screen = pygame.display.set_mode((500, 500))
+screen = pygame.display.set_mode((800, 640))
 pygame.display.set_caption("Bricks Breaker")
 
 # Universal Variables
@@ -39,7 +39,7 @@ brick = brick.convert_alpha()
 brick_rect = brick.get_rect()
 
 bricks = []
-brick_rows = 1
+brick_rows = 5
 brick_gap = 10
 brick_cols = screen.get_width() // (brick_rect[2] + brick_gap)
 side_gap = (screen.get_width() - (brick_rect[2] + brick_gap) * brick_cols + brick_gap) // 2
