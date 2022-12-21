@@ -20,12 +20,12 @@ time_location = (25, screen.get_height() - 75)
 hit_color = [255, 255, 255]
 
 # Assets
-bat = pygame.image.load('./images/bat.png')
+bat = pygame.image.load('images/bat.png')
 bat = bat.convert_alpha()
 bat_rect = bat.get_rect()
 bat_rect[1] = screen.get_height() - 100
 
-ball = pygame.image.load('./images/ball.png')
+ball = pygame.image.load('images/ball.png')
 ball = ball.convert_alpha()
 ball_rect = ball.get_rect()
 ball_start = (random.randint(100, screen.get_width() - 100), 250)
@@ -34,7 +34,7 @@ ball_served = False
 sx, sy = ball_speed
 ball_rect.topleft = ball_start
 
-brick = pygame.image.load('./images/brick.jpg')
+brick = pygame.image.load('images/brick.jpg')
 brick = brick.convert_alpha()
 brick_rect = brick.get_rect()
 
